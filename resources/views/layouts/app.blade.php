@@ -12,7 +12,7 @@
         <ul class="flex items-center">
             
             <li>
-                <a href="/" class="p-3">Home</a>
+                <a href="{{ route('home') }}" class="p-3">Home</a>
             </li>
             <li>
                 <a href="{{ route('dashboard') }}" class="p-3">Dashboard</a>
@@ -24,6 +24,9 @@
 
         <ul class="flex items-center">
             @auth
+                @if(auth()->user()->image)
+                <img class="image rounded-circle" src="{{asset('/storage/images/'.Auth::user()->image)}}" alt="profile_image" style="width: 40px;height: 40px; padding: 5px; margin: 0px; ">
+                @endif
                 <li>
                     <a href="" class="p-3">{{ auth()->user()->name }}</a>
                 </li>
