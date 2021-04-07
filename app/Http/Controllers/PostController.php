@@ -11,7 +11,7 @@ class PostController extends Controller
     //
     public function __construct()
     {
-        $this->middleware(['auth'])->only(['store', 'destroy']);
+        $this->middleware(['auth'])->only(['store', 'destroy','edit','update']);
     }
 
     public function index()
@@ -19,16 +19,12 @@ class PostController extends Controller
       //  $posts = Post::get(); Returns all posts which is a laravel collection
         $posts = Post::latest()->with(['user', 'likes'])->paginate(6);// paginates all the posts
 
-        return view('posts.index', [
-            'posts' => $posts
-        ]);
+        return view('posts.index', compact('posts'));
     }
 
     public function show(Post $post)
     {
-        return view('posts.show', [
-            'post' => $post
-        ]);
+        return view('posts.show', compact('posts'));
     }
     public function store(Request $request)
     {
@@ -42,6 +38,24 @@ class PostController extends Controller
 
         // auth()->user()->posts()->create();
     }
+    public function edit($id)
+    {
+        $posts = Post::latest()->with(['user', 'likes'])->paginate(6);// paginates all the posts
+        $post = Post::findOrFail($id);
+        return view('posts.edit', compact('post','posts'));
+
+    }
+
+    public function update(Request $request, $id)
+    {
+        $post = Post::findOrFail($id);
+        $this->authorize('update', $post);    
+
+        $post->update($request->all());
+
+        return redirect('/posts');
+    }
+
     public function destroy(Post $post)
     {
         // if (!$post->ownedBy(auth()->user())){
@@ -54,7 +68,3 @@ class PostController extends Controller
         return back();
     }
 }
-        // Post::create([
-        //     'user_id' => auth()->id(),
-        //     'body'=> $request->body
-        // ]);

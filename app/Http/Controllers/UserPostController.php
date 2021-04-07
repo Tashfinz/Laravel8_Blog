@@ -17,4 +17,5 @@ class UserPostController extends Controller
             'posts' => $posts
         ]);
     }
+
 }
